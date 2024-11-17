@@ -1,13 +1,24 @@
-# Use the official Python 3.9 slim image as the base
+# Use the official Python 3.9 slim image to minimize image size
 FROM python:3.9-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy only the requirements file to leverage Docker's caching
+# Install system dependencies required for Python packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3-dev \
+    libssl-dev \
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file first for dependency installation
 COPY requirements.txt requirements.txt
 
-# Install dependencies
+# Upgrade pip to the latest version
+RUN pip install --upgrade pip
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
