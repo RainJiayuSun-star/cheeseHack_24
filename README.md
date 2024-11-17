@@ -44,7 +44,8 @@ Make sure you have the following installed:
    urban_greening.html
 
 4. Weather prediction 
-
+   
 ## Limitations
 1. The linear regression training can be improved for precision
 2. Only Madison, WI data collected and trained for this project, implement plant suggestion based on weather and soil ph value of a place in the future
+3. Can be deployed using cloud service in the future
