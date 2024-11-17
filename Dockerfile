@@ -18,8 +18,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app/
 
 # Expose the port that Flask will run on
-EXPOSE 5000
+EXPOSE 8080
 
 # Command to run the Flask app using Gunicorn (a production-grade WSGI server)
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "app:app"]
 
