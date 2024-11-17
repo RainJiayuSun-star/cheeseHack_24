@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Greening Suggestions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Urban Greening Suggestions</h1>
+    </header>
+
+    <section class="form-section">
+        <h2>Enter a State</h2>
+        <form method="POST">
+            <label for="state_name">State Name:</label>
+            <input type="text" id="state_name" name="state_name" required>
+            <button type="submit">Get Suggestions</button>
+        </form>
+    </section>
+
+    {% if weather_data %}
+    <section class="results">
+        <h2>Weather Data for {{ weather_data.state }}</h2>
+        <p>Capital City: {{ weather_data.capital }}</p>
+        <p>Temperature: {{ weather_data.temperature }}°C</p>
+        <p>Humidity: {{ weather_data.humidity }}%</p>
+        <p>Weather: {{ weather_data.weather_description }}</p>
+
+        <h3>Greening Suggestions</h3>
+        <p>{{ greening_suggestion }}</p>
+    </section>
+    {% elif error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+</body>
+</html>

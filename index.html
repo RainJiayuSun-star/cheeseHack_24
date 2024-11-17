@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Greening Suggestions</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Urban Greening Suggestions</h1>
+    </header>
+
+    <div class="form-section">
+        <form id="cityForm">
+            <label for="city_name">Select City:</label>
+            <select name="city_name" id="city_name">
+                {% for city in cities %}
+                    <option value="{{ city.city }}">{{ city.city }}, {{ city.state }}</option>
+                {% endfor %}
+            </select>
+            <!-- Hidden fields for latitude and longitude -->
+            <input type="hidden" name="latitude" id="lat">
+            <input type="hidden" name="longitude" id="lng">
+            <button type="submit">Get Suggestions</button>
+        </form>
+    </div>
+
+    <!-- Map container -->
+    <div id="map" style="height: 500px;"></div>
+
+    <!-- Display weather and greening suggestions -->
+    <div id="results">
+        <!-- Weather and greening suggestions will be displayed here after form submission -->
+    </div>
+
+    <div id="error-message" style="color: red;"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map with a default view (London)
+        var map = L.map('map').setView([51.505, -0.09], 13);
+
+        // Add OpenStreetMap tile layer to the map
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var marker;
+
+        // Add click event listener to the map to get the latitude and longitude
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            // Place a marker on the map at the clicked location
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                marker = L.marker([lat, lng]).addTo(map);
+            }
+
+            // Set the latitude and longitude values in the hidden input fields
+            document.getElementById('lat').value = lat;
+            document.getElementById('lng').value = lng;
+        });
+
+        // Handle form submission to fetch weather data and greening suggestions
+        document.getElementById('cityForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var lat = document.getElementById('lat').value;
+            var lng = document.getElementById('lng').value;
+
+            // Make an AJAX request to the backend with latitude and longitude
+            fetch(`/get_suggestions?lat=${lat}&lng=${lng}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('error-message').innerText = data.error;
+                        document.getElementById('results').innerHTML = '';
+                    } else {
+                        // Display weather data
+                        var weatherData = `
+                            <h3>Weather Data:</h3>
+                            <p>Temperature: ${data.temperature}°C</p>
+                            <p>Humidity: ${data.humidity}%</p>
+                            <p>Weather: ${data.weather_description}</p>
+                        `;
+
+                        // Display greening suggestions
+                        var greeningSuggestions = `
+                            <h3>Greening Suggestions:</h3>
+                            <p>${data.greening_suggestion}</p>
+                        `;
+
+                        document.getElementById('results').innerHTML = weatherData + greeningSuggestions;
+                        document.getElementById('error-message').innerText = '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('error-message').innerText = 'Error fetching data from backend.';
+                });
+        });
+    </script>
+</body>
+</html>
