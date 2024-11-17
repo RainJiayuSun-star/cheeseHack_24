@@ -1,6 +1,7 @@
-# CheeseHack_24
+# Green Urban (CheeseHack_24
 
-A web application built with Flask for solving [insert project description]. This guide helps you set up, install dependencies, and run the project.
+A web application built with Flask for give people plant's probable planning recommendation based on weather prediction. The project is currently a prototype with only weather prediction functionality 
+This guide helps you set up, install dependencies, and run the project.
 
 ## Table of Contents
 - [Requirements](#requirements)
