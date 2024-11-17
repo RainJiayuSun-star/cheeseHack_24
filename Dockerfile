@@ -1,31 +1,25 @@
-# Use the official Python 3.9 slim image to minimize image size
-FROM python:3.12-slim
+# Use a Python base image
+FROM python:3.10-slim
 
-# Set the working directory in the container
+# Set environment variables to prevent Python from buffering output
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Set the working directory inside the container
 WORKDIR /app
 
-# Install system dependencies required for Python packages
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    python3-dev \
-    libssl-dev \
-    libffi-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Copy only the requirements file to leverage Docker's caching
+COPY requirements.txt /app/
 
-# Copy the requirements file first for dependency installation
-COPY requirements.txt requirements.txt
-
-# Upgrade pip to the latest version
-RUN pip install --upgrade pip
-
-# Install Python dependencies
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
-COPY . .
+# Copy the rest of the application files
+COPY . /app/
 
-# Expose port 8080 for Google Cloud Run
-EXPOSE 8080
+# Expose the port that Flask will run on
+EXPOSE 5000
 
-# Command to run the Flask app using gunicorn
-CMD ["gunicorn", "-b", ":8080", "app:app"]
+# Command to run the Flask app using Gunicorn (a production-grade WSGI server)
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+
