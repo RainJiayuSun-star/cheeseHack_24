@@ -36,9 +36,8 @@ Make sure you have the following installed:
 1. Run app.python file for running the application:
    ```bash
    python3 app.python
-   or
-   ```bash
-   python app.python
+   
+   # or running: python app.python
 
 3. Open the html user interface
    urban_greening.html
