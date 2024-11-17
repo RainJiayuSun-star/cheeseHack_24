@@ -28,19 +28,22 @@ Make sure you have the following installed:
 
 ## Installation
 1. get all requirement setup:
+   ```bash
    pip install -r requirements.txt
 
 
 ## Running the Application
 1. Run app.python file for running the application:
+   ```bash
    python3 app.python
    or
+   ```bash
    python app.python
 
-2. Open the html user interface
-   urban_greening
+3. Open the html user interface
+   urban_greening.html
 
-3. Weather prediction 
+4. Weather prediction 
 
 ## Limitations
 1. The linear regression training can be improved for precision
